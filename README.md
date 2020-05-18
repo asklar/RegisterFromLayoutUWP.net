@@ -11,15 +11,21 @@ This project describes how to set up your project to allow deploying from layout
 1) Add the following to your `csproj`:
 
 ```xml
-  <Import Project="$(OutputPath)\$(AssemblyName).Build.appxrecipe" Condition="Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" />
+  <Import Project="$(OutputPath)\$(AssemblyName).Build.appxrecipe" 
+          Condition="Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" />
   <Target Name="Deploy">
-    <Error Condition="!Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" Text="You must first build the project before deploying it" />
-    <Copy SourceFiles="%(AppxPackagedFile.Identity)" DestinationFiles="$(OutputPath)Appx\%(AppxPackagedFile.PackagePath)" />
-    <Copy SourceFiles="%(AppXManifest.Identity)" DestinationFiles="$(OutputPath)Appx\%(AppxManifest.PackagePath)" Condition="'%(AppxManifest.SubType)'!='Designer'"/>
-    <Exec Command="powershell -Command Add-AppxPackage -Register $(OutputPath)Appx\AppxManifest.xml" ContinueOnError="false" />
+    <Error Condition="!Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" 
+           Text="You must first build the project before deploying it" />
+    <Copy SourceFiles="%(AppxPackagedFile.Identity)" 
+          DestinationFiles="$(OutputPath)Appx\%(AppxPackagedFile.PackagePath)" />
+    <Copy SourceFiles="%(AppXManifest.Identity)" 
+          DestinationFiles="$(OutputPath)Appx\%(AppxManifest.PackagePath)" 
+          Condition="'%(AppxManifest.SubType)'!='Designer'"/>
+    <Exec Command="powershell -Command Add-AppxPackage -Register $(OutputPath)Appx\AppxManifest.xml" 
+          ContinueOnError="false" />
   </Target>
 ```
 2) Build your app in the command line as usual, e.g. `msbuild /restore /p:Configuration=Debug /p:Platform=x86`
-3) Then run the `deploy` target:  `msbuild /p:Configuration=Debug /p:Platform=x86 /t:Deploy`
+3) Then run the `Deploy` target:  `msbuild /p:Configuration=Debug /p:Platform=x86 /t:Deploy`
 
 Done!
