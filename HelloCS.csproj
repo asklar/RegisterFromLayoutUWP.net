@@ -159,6 +159,13 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 
+  <Import Project="$(OutputPath)\$(AssemblyName).Build.appxrecipe" Condition="Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" />
+  <Target Name="Deploy">
+    <Error  Condition="!Exists('$(OutputPath)\$(AssemblyName).Build.appxrecipe')" Text="You must first build the project before deploying it" />
+    <Copy SourceFiles="%(AppxPackagedFile.Identity)" DestinationFiles="$(OutputPath)Appx\%(AppxPackagedFile.PackagePath)" />
+    <Copy SourceFiles="%(AppXManifest.Identity)" DestinationFiles="$(OutputPath)Appx\%(AppxManifest.PackagePath)" Condition="'%(AppxManifest.SubType)'!='Designer'"/>
+    <Exec Command="powershell -Command Add-AppxPackage -Register $(OutputPath)Appx\AppxManifest.xml" ContinueOnError="false" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
